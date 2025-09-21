@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% block title %}Doctor List{% endblock %}
+
+{% block content %}
+<style>
+    /* Custom Table Styling */
+    .custom-table thead {
+        background-color: #007b8a; /* Calming medical teal */
+        color: white;
+    }
+
+    .custom-table tbody tr {
+        background-color: #e6f9f9; /* Light mint/blue background */
+        color: #004d4d;
+        transition: background-color 0.3s ease;
+    }
+
+    .custom-table tbody tr:hover {
+        background-color: #d0f0f0;
+        color: #003333;
+    }
+
+    .custom-table th, .custom-table td {
+        vertical-align: middle;
+        text-align: center;
+    }
+
+    .custom-table {
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .table-wrapper {
+        overflow-x: auto;
+        margin-top: 20px;
+    }
+
+    .btn-sm {
+        margin: 0 2px;
+        background-color: #00a2a2;
+        color: white;
+        border: none;
+    }
+
+    .btn-sm:hover {
+        background-color: #008080;
+    }
+
+    .btn-primary {
+        background-color: #007b8a;
+        border-color: #007b8a;
+    }
+
+    .btn-primary:hover {
+        background-color: #006e7a;
+        border-color: #006e7a;
+    }
+
+    h2 {
+        color: #007b8a;
+        font-weight: bold;
+    }
+
+    .doctor-banner {
+        width: 100%;
+        height: auto;
+        max-height: 300px;
+        object-fit: cover;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+</style>
+
+<!-- Doctor Banner Image -->
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Doctor's List</h2>
+    <a class="btn btn-primary" href="{% url 'create' %}">➕ Add New Doctor</a>
+</div>
+
+<div class="table-wrapper">
+    <table class="table table-bordered custom-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Doctor ID</th>
+                <th>Doctor Name</th>
+                <th>Doctor Email</th>
+                <th>Doctor Contact</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for doctor in doctor_list %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ doctor.Doctor_id }}</td>
+                <td>{{ doctor.Doctor_name }}</td>
+                <td>{{ doctor.Doctor_email }}</td>
+                <td>{{ doctor.Doctor_contact }}</td>
+                <td>
+                    <a href="{% url 'update' doctor.pk %}" class="btn btn-sm">✏️ Edit</a>
+                    <a href="#" class="btn btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="{{ doctor.pk }}">🗑️ Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center">No doctors found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this doctor's record?
+            </div>
+            <div class="modal-footer">
+                <form method="POST" id="deleteForm">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                </form>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript to handle dynamic form action for deletion -->
+<script>
+    const deleteModal = document.getElementById('deleteModal');
+    deleteModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget;
+        const doctorId = button.getAttribute('data-id');
+        const deleteForm = document.getElementById('deleteForm');
+        deleteForm.action = `/delete/${doctorId}/`;
+    });
+</script>
+
+{% endblock %}

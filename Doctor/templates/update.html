@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Update Employee{% endblock %}
+
+{% block content %}
+<style>
+    .form-container {
+        max-width: 600px;
+        margin: 30px auto;
+        background-color: #f4fdfd; /* Very light teal */
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        border-left: 6px solid #007b8a;
+    }
+
+    h2 {
+        color: #007b8a;
+        text-align: center;
+        margin-bottom: 30px;
+        font-weight: bold;
+    }
+
+    .btn-primary {
+        background-color: #007b8a;
+        border-color: #007b8a;
+    }
+
+    .btn-primary:hover {
+        background-color: #006e7a;
+        border-color: #006e7a;
+    }
+
+    .btn-secondary {
+        margin-top: 10px;
+        background-color: #cfd8dc;
+        color: #004d4d;
+        border: none;
+    }
+
+    .btn-secondary:hover {
+        background-color: #b0bec5;
+        color: #003333;
+    }
+</style>
+
+<div class="form-container">
+    <h2>Update Employee</h2>
+    <form method="POST" class="form-group">
+        {% csrf_token %}
+        {{ form|crispy }}
+
+        <button type="submit" class="btn btn-primary">💾 Save Employee</button>
+        <a href="{% url 'list' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}
